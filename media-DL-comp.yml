@@ -1,7 +1,7 @@
 ---
 version: "3.8"
 services:
-  nzbget:
+  nzbget: #newsgroupdownloader
     image: linuxserver/nzbget:latest
     container_name: nzbget
     environment:
@@ -9,8 +9,8 @@ services:
       - PGID=100
       - TZ=America/Denver
     volumes:
-      - /volume3/docker/nzbget:/config
-      - "/volume2/Junk\ Storage/Video:/data"
+      - /volume3/docker/nzbget:/config #container folder
+      - "/volume2/Junk\ Storage/Video:/data" #media folder
     ports:
       - 6789:6789
     network_mode: bridge
@@ -23,7 +23,7 @@ services:
       - PGID=100
       - TZ=America/Denver
     volumes:
-      - /volume3/docker/prowlarr:/config
+      - /volume3/docker/prowlarr:/config #container folder
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -35,8 +35,8 @@ services:
       - PGID=100
       - TZ=America/Denver
     volumes:
-      - "/volume2/Junk\ Storage/Video:/data"
-      - /volume3/docker/radarr:/config
+      - "/volume2/Junk\ Storage/Video:/data" #media folder
+      - /volume3/docker/radarr:/config #container folder
     ports:
       - 7878:7878
     network_mode: bridge
@@ -49,9 +49,27 @@ services:
       - PGID=100
       - TZ=America/Denver
     volumes:
-      - "/volume2/Junk\ Storage/Video:/data"
-      - /volume3/docker/sonarr:/config
+      - "/volume2/Junk\ Storage/Video:/data" #media folder
+      - /volume3/docker/sonarr:/config #container folder
     ports:
       - 8989:8989
     network_mode: bridge
+    restart: unless-stopped
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container: jellyfin
+    environment:
+      - PUID=1027
+      - PGID=100
+      - TZ=America/Denver
+      - JELLYFIN_PublishedServerUrl=10.1.1.4 #optional
+    volumes:
+      - "/volume2/Junk\ Storage/Video/TV:/data/tvshows"
+      - "/volume2/Junk\ Storage/Video/Movies:/data/movies"
+      - /volume3/docker/jellyfin:/config
+    ports:
+      - 8096:8096
+      - 8920:8920 #optional
+      - 7359:7359/udp #server discovery
+#     - 1900:1900/udp #dlna port commented since nas has dlna already
     restart: unless-stopped
