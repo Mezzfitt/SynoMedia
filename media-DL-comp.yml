@@ -1,0 +1,57 @@
+---
+version: "3.8"
+services:
+  nzbget:
+    image: linuxserver/nzbget:latest
+    container_name: nzbget
+    environment:
+      - PUID=1027
+      - PGID=100
+      - TZ=America/Denver
+    volumes:
+      - /volume3/docker/nzbget:/config
+      - "/volume2/Junk\ Storage/Video:/data"
+    ports:
+      - 6789:6789
+    network_mode: bridge
+    restart: unless-stopped
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: prowlarr
+    environment:
+      - PUID=1027
+      - PGID=100
+      - TZ=America/Denver
+    volumes:
+      - /volume3/docker/prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+  radarr:
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1027
+      - PGID=100
+      - TZ=America/Denver
+    volumes:
+      - "/volume2/Junk\ Storage/Video:/data"
+      - /volume3/docker/radarr:/config
+    ports:
+      - 7878:7878
+    network_mode: bridge
+    restart: unless-stopped
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1027
+      - PGID=100
+      - TZ=America/Denver
+    volumes:
+      - "/volume2/Junk\ Storage/Video:/data"
+      - /volume3/docker/sonarr:/config
+    ports:
+      - 8989:8989
+    network_mode: bridge
+    restart: unless-stopped
